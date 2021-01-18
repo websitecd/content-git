@@ -1,0 +1,7 @@
+# IDEA files #
+.idea/
+*.iml
+
+# Package Files #
+target/
+website.git/
