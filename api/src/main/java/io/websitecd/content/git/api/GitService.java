@@ -11,6 +11,7 @@ import javax.enterprise.event.Observes;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @ApplicationScoped
@@ -28,6 +29,10 @@ public class GitService {
     public List<String> list() {
         File file = new File(dataDir);
         String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
+
+        if (directories == null) {
+            return Collections.emptyList();
+        }
 
         return Arrays.asList(directories);
     }
