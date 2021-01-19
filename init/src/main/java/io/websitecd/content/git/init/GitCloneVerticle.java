@@ -46,8 +46,6 @@ public class GitCloneVerticle extends AbstractVerticle {
                 git.remoteAdd().setName("origin").setUri(new URIish(gitUrl)).call();
                 StoredConfig config = git.getRepository().getConfig();
                 config.setBoolean("http", null, "sslVerify", sslVerify);
-                config.setString("branch", component.getSpec().getRef(), "remote", "origin");
-
                 config.save();
             } else {
                 log.infof("Directory %s exists. Just pull", gitDir);
