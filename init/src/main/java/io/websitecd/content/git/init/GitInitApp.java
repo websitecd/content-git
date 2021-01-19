@@ -32,9 +32,6 @@ public class GitInitApp implements QuarkusApplication {
     @ConfigProperty(name = "app.target.dir")
     String targetDir;
 
-    @ConfigProperty(name = "app.config.sslVerify")
-    Boolean sslVerify;
-
     @Inject
     Vertx vertx;
 
@@ -76,7 +73,7 @@ public class GitInitApp implements QuarkusApplication {
     public Future<Void> deployVerticle(GitComponent component, String targetDir, DeploymentOptions options) {
         Future<Void> promise = Future.future();
 
-        GitCloneVerticle cloneVerticle = new GitCloneVerticle(component, targetDir, sslVerify);
+        GitCloneVerticle cloneVerticle = new GitCloneVerticle(component, targetDir);
         log.infof("Deploying git clone verticle dir=%s", component.getDir());
         vertx.deployVerticle(cloneVerticle, options, result -> {
             if (result.failed()) {
