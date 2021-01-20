@@ -21,15 +21,31 @@ public class WebsiteInfoResource {
     @Inject
     GitService gitService;
 
+    Map<String, GitInfo> result = null;
+
     @GET
     @Path("")
     public Map<String, GitInfo> info() throws IOException, GitAPIException {
-        Map<String, GitInfo> result = new HashMap<>();
-        List<String> dirs = gitService.list();
-        for (String dir : dirs) {
-            result.put(dir, gitService.info(dir));
+        if (result == null) {
+            initInfo();
         }
         return result;
+    }
+
+    public synchronized void initInfo() {
+        result = new HashMap<>();
+        List<String> dirs = gitService.list();
+        for (String dir : dirs) {
+            try {
+                result.put(dir, gitService.info(dir));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void clearInfo() {
+        result = null;
     }
 
 }
