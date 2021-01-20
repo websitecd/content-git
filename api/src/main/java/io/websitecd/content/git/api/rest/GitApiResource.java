@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class GitApiResource {
 
     @GET
     @Path("list")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<String> list() {
         return gitService.list();
     }
