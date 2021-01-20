@@ -13,7 +13,7 @@ mvn package
 
 Run: 
 ```shell
-APP_TARGET_DIR=/tmp APP_CONFIG_PATH=src/test/resources/config-test.yaml java -jar target/content-git-init-1.0.0-SNAPSHOT-runner.jar
+APP_DATA_DIR=/tmp/repos java -jar target/content-git-api-1.0.0-SNAPSHOT-runner.jar
 ```
 
 #### Native Mode
@@ -24,5 +24,5 @@ mvn package -Pnative
 
 Run:
 ```shell
-APP_TARGET_DIR=/tmp APP_CONFIG_PATH=src/test/resources/config-test.yaml ./target/content-git-init-1.0.0-SNAPSHOT-runner
+APP_DATA_DIR=/tmp/repos ./target/content-git-api-1.0.0-SNAPSHOT-runner
 ```
