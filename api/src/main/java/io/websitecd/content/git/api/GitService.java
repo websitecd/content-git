@@ -41,6 +41,8 @@ public class GitService {
     }
 
     public List<String> list() {
+        log.info("get list");
+
         File file = new File(dataDir);
         String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
 
@@ -52,7 +54,7 @@ public class GitService {
     }
 
     public void updateGit(String dir) throws FileNotFoundException, GitAPIException {
-        log.infof("Update git %s", dir);
+        log.infof("Update git dir=%s", dir);
         File gitDir = getGitDir(dir);
 
         Git git = Git.init().setDirectory(gitDir).call();
@@ -63,6 +65,8 @@ public class GitService {
     }
 
     public GitInfo info(String dir) throws IOException, GitAPIException {
+        log.infof("get info dir=%s", dir);
+
         File gitDir = getGitDir(dir);
         Git git = Git.init().setDirectory(gitDir).call();
 
