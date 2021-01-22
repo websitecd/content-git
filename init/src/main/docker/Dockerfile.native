@@ -13,6 +13,10 @@
 #
 # docker run -i --rm -e APP_TARGET_DIR=/tmp -e APP_CONFIG_PATH=/app/config/config-test.yaml -v /Users/lkrzyzan/git/websitecd/content-git/init/src/test/resources:/app/config/ -p 8080:8080 websitecd/content-git-init
 #
+# Deploy to Quay.io
+# docker tag websitecd/content-git-init quay.io/websitecd/content-git-init
+# docker push quay.io/websitecd/content-git-init
+#
 ###
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
 WORKDIR /work/

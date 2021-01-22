@@ -13,6 +13,10 @@
 #
 # docker run -i --rm -e APP_DATA_DIR=/app/data -v /tmp/repos:/app/data/ -p 8090:8090 websitecd/content-git-api
 #
+# Deploy to Quay.io
+# docker tag websitecd/content-git-api quay.io/websitecd/content-git-api
+# docker push quay.io/websitecd/content-git-api
+#
 ###
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
 WORKDIR /work/
