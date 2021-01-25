@@ -60,14 +60,31 @@ public class GitService {
 
         Git git = Git.init().setDirectory(gitDir).call();
         PullResult result = git.pull().call();
-        String resultStr = result.toString();
+        String resultStr = toString(result);
         if (!result.isSuccessful()) {
             throw new RuntimeException("Cannot perform git pull. reason=%s" + resultStr);
         }
         git.close();
+        log.infof("Update Success. result=%s", resultStr);
 
         websiteInfoResource.clearInfo();
         return resultStr;
+    }
+
+    public String toString(PullResult result) {
+        StringBuilder sb = new StringBuilder();
+        if (result.getFetchResult() != null)
+            sb.append(result.getFetchResult().toString());
+        else
+            sb.append("No fetch result");
+        sb.append("\n");
+        if (result.getMergeResult() != null)
+            sb.append(result.getMergeResult().toString());
+        else if (result.getRebaseResult() != null)
+            sb.append(result.getRebaseResult().toString());
+        else
+            sb.append("No update result");
+        return sb.toString();
     }
 
     public GitInfo info(String dir) throws IOException, GitAPIException {
