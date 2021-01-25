@@ -1,0 +1,11 @@
+components:
+  - dir: theme/
+    kind: git
+    spec:
+      ref: main
+      url: https://github.com/websitecd/websitecd-examples.git
+  - dir: _root/
+    kind: git
+    spec:
+      ref: main
+      url: https://github.com/websitecd/websitecd-examples.git

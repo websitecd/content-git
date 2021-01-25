@@ -1,29 +1,43 @@
 # content-git / init
 Container for initializing content from git repositories
 
+## Configuration
+
+```shell script
+export CONFIG_PATH=/full/path/to/config.yaml
+export TARGET_DIR=/full/target/path
+node init-content.js 
+```
+
+The result is that all git repose are cloned based on configurations
+
 ## How to run
 
-### Locally
+### Docker
 
-#### JVM Mode
+Use docker from [Docker Hub](https://hub.docker.com/r/websitecd/content-git-init) or build your own.
 
-```shell
-mvn package
+Build image:
+
+```shell script
+docker build -t websitecd/content-git-init .
 ```
 
-Run: 
-```shell
-mkdir /tmp/repos
-APP_TARGET_DIR=/tmp/repos APP_CONFIG_PATH=src/test/resources/config-test.yaml java -jar target/content-git-init-1.0.0-SNAPSHOT-runner.jar
+Prepare config for docker
+```shell script
+rm -rf /tmp/repos; mkdir /tmp/repos
+cp examples/static-content-config.yaml /tmp/repos/static-content-config.yaml
 ```
 
-#### Native Mode
+Run init:
 
-```shell
-mvn package -Pnative
+```shell script
+docker run --rm -i -e "CONFIG_PATH=/app/data/static-content-config.yaml" -e "TARGET_DIR=/app/data" -v "/tmp/repos/:/app/data/" websitecd/content-git-init node init-content.js
 ```
 
-Run:
+Push to repo
+
 ```shell
-APP_TARGET_DIR=/tmp/repos APP_CONFIG_PATH=src/test/resources/config-test.yaml ./target/content-git-init-1.0.0-SNAPSHOT-runner
+docker tag websitecd/content-git-init quay.io/websitecd/content-git-init
+docker push quay.io/websitecd/content-git-init
 ```

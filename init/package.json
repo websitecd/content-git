@@ -1,0 +1,26 @@
+{
+  "name": "core-staticcontent",
+  "version": "1.0.0",
+  "description": "Core component for managing and serving static content",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "init-content": "node init-content.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OpenHybridWeb/core-staticcontent.git"
+  },
+  "keywords": [],
+  "author": "Libor Krzyzanek",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/OpenHybridWeb/core-staticcontent/issues"
+  },
+  "homepage": "https://github.com/OpenHybridWeb/core-staticcontent#readme",
+  "dependencies": {
+    "simple-git": "^2.31.0",
+    "yaml": "^1.10.0"
+  }
+}
