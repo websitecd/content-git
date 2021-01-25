@@ -5,6 +5,7 @@ import io.websitecd.content.git.api.model.CommitInfo;
 import io.websitecd.content.git.api.model.GitInfo;
 import io.websitecd.content.git.api.rest.WebsiteInfoResource;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -53,15 +54,20 @@ public class GitService {
         return Arrays.asList(directories);
     }
 
-    public void updateGit(String dir) throws FileNotFoundException, GitAPIException {
+    public String updateGit(String dir) throws FileNotFoundException, GitAPIException {
         log.infof("Update git dir=%s", dir);
         File gitDir = getGitDir(dir);
 
         Git git = Git.init().setDirectory(gitDir).call();
-        git.pull();
+        PullResult result = git.pull().call();
+        String resultStr = result.toString();
+        if (!result.isSuccessful()) {
+            throw new RuntimeException("Cannot perform git pull. reason=%s" + resultStr);
+        }
         git.close();
 
         websiteInfoResource.clearInfo();
+        return resultStr;
     }
 
     public GitInfo info(String dir) throws IOException, GitAPIException {

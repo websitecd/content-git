@@ -28,9 +28,7 @@ public class GitApiResource {
     @GET
     @Path("update/{dir}")
     public String list(@PathParam("dir") String dir) throws FileNotFoundException, GitAPIException {
-        gitService.updateGit(dir);
-        return "DONE";
+        return "UPDATE SUCCESSFUL result=" + gitService.updateGit(dir);
     }
-
 
 }
