@@ -15,7 +15,7 @@ The result is that all git repose are cloned based on configurations
 
 ### Docker
 
-Use docker from [Docker Hub](https://hub.docker.com/r/websitecd/content-git-init) or build your own.
+Use docker from [Quay](https://quay.io/repository/websitecd/content-git-api) or build your own.
 
 Build image:
 
