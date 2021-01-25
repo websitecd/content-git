@@ -73,16 +73,18 @@ public class GitService {
 
     public String toString(PullResult result) {
         StringBuilder sb = new StringBuilder();
-        if (result.getFetchResult() != null)
-            sb.append(result.getFetchResult().toString());
-        else
+        if (result.getFetchResult() != null) {
+            sb.append(result.getFetchResult().submoduleResults());
+        } else {
             sb.append("No fetch result");
+        }
         sb.append("\n");
-        if (result.getMergeResult() != null)
-            sb.append(result.getMergeResult().toString());
-        else if (result.getRebaseResult() != null)
-            sb.append(result.getRebaseResult().toString());
-        else
+        if (result.getMergeResult() != null) {
+            sb.append(result.getMergeResult().getMergeStatus());
+        } else if (result.getRebaseResult() != null) {
+            sb.append("Rebase:");
+            sb.append(result.getRebaseResult().getStatus());
+        } else
             sb.append("No update result");
         return sb.toString();
     }
