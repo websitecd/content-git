@@ -23,7 +23,7 @@ Build image:
 docker build -t websitecd/content-git-init .
 ```
 
-Prepare config for docker
+Prepare config
 ```shell script
 rm -rf /tmp/repos; mkdir /tmp/repos
 cp examples/static-content-config.yaml /tmp/repos/static-content-config.yaml
@@ -32,7 +32,7 @@ cp examples/static-content-config.yaml /tmp/repos/static-content-config.yaml
 Run init:
 
 ```shell script
-docker run --rm -i -e "CONFIG_PATH=/app/data/static-content-config.yaml" -e "TARGET_DIR=/app/data" -v "/tmp/repos/:/app/data/" websitecd/content-git-init node init-content.js
+docker run --rm -i -e "CONFIG_PATH=/app/data/static-content-config.yaml" -e "TARGET_DIR=/app/data" -v "/tmp/repos/:/app/data/" websitecd/content-git-init
 ```
 
 Push to repo
