@@ -9,11 +9,16 @@ const targetDirPath = process.env.TARGET_DIR;
 if (configFilePath === undefined) logAndAbort("Error: CONFIG_PATH env variable not defined");
 if (targetDirPath === undefined) logAndAbort("Error: TARGET_DIR env variable not defined");
 
+const sslNoVerify = process.env.GIT_SSL_NO_VERIFY || "false";
+const sslVerify = !(sslNoVerify === "true");
+
+console.log("Configuration CONFIG_PATH=%s TARGET_DIR=%s GIT_SSL_NO_VERIFY=%s", configFilePath, targetDirPath, sslNoVerify);
+
 // Start the process
 processConfigFile(configFilePath);
 
 function processConfigFile(path) {
-    console.log("Going to read config file %s", path);
+    console.log("Going to read config file path=%s sslVerify=%s", path, sslVerify);
     fs.readFile(path, 'utf8')
         .then(file => YAML.parseDocument(file, {schema: 'core'}))
         .then(yaml => processConfig(yaml))
@@ -30,21 +35,22 @@ function processConfig(config) {
         if (kind === 'git') {
             const desiredDir = targetDirPath + "/" + componentDir;
             // TODO: Redesign the git clone process. It should git clone to another directory and rsync to target dir and delete the previous "version" within rsync
-            fs.access(desiredDir)
+            return fs.access(desiredDir)
                 .then(() => {
                     console.log("Dir %s exists. SKIPPING !", desiredDir);
                 })
                 .catch(() => {
                     console.log("Creating dir %s", desiredDir);
                     return fs.mkdir(desiredDir)
-                        .then(() => gitCloneSubdirPromise(spec.get('url'), desiredDir, spec.get('ref'), spec.get('dir')));
+                        .then(() => gitCloneSubdirPromise(spec.get('url'), desiredDir, spec.get('ref'), spec.get('dir')))
+                        .catch(reason => logAndAbort("Cannot make dir", reason));
                 });
         }
     });
 
     // Process all actions
     Promise.all(gitPromises)
-        .then(() => console.log("All git repos cloned"))
+        .finally(() => console.log("SUCCESS. All git repos cloned"))
         .catch(reason => logAndAbort("Error cloning git", reason));
 }
 
@@ -56,6 +62,8 @@ function gitCloneSubdirPromise(gitPath, localPath, ref, subDir) {
     });
     return git.clone(gitPath, localPath)
         .then(() => git.addConfig('pull.rebase', 'true'))
+        .then(() => git.addConfig('pull.rebase', 'true'))
+        .then(() => git.addConfig('http.sslVerify', '' + sslVerify))
         .then(() => git.checkout(ref))
         .then(() => console.log("git-clone DONE git=%s ref=%s subDir=%s toDir=%s", gitPath, ref, subDir, localPath));
 }
