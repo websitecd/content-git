@@ -7,6 +7,7 @@ import io.websitecd.content.git.api.rest.WebsiteInfoResource;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
@@ -59,7 +60,14 @@ public class GitService {
         File gitDir = getGitDir(dir);
 
         Git git = Git.init().setDirectory(gitDir).call();
-        PullResult result = git.pull().call();
+
+        PullResult result;
+        try {
+            result = git.pull().call();
+        } catch (NoHeadException e) {
+            log.infof("Update skipped. Not on HEAD");
+            return "SKIP-NO-HEAD";
+        }
         String resultStr = toString(result);
         if (!result.isSuccessful()) {
             throw new RuntimeException("Cannot perform git pull. reason=%s" + resultStr);
@@ -78,7 +86,7 @@ public class GitService {
         } else {
             sb.append("No fetch result");
         }
-        sb.append("\n");
+        sb.append(" ");
         if (result.getMergeResult() != null) {
             sb.append(result.getMergeResult().getMergeStatus());
         } else if (result.getRebaseResult() != null) {
