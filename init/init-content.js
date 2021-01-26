@@ -28,9 +28,17 @@ function processConfig(config) {
         let kind = c.get('kind');
         let spec = c.get('spec');
         if (kind === 'git') {
-            const desiredDir = targetDirPath + "/" + componentDir
-            return fs.mkdir(desiredDir)
-                .then(() => gitCloneSubdirPromise(spec.get('url'), desiredDir, spec.get('ref'), spec.get('dir')));
+            const desiredDir = targetDirPath + "/" + componentDir;
+            // TODO: Redesign the git clone process. It should git clone to another directory and rsync to target dir and delete the previous "version" within rsync
+            fs.access(desiredDir)
+                .then(() => {
+                    console.log("Dir %s exists. SKIPPING !", desiredDir);
+                })
+                .catch(() => {
+                    console.log("Creating dir %s", desiredDir);
+                    return fs.mkdir(desiredDir)
+                        .then(() => gitCloneSubdirPromise(spec.get('url'), desiredDir, spec.get('ref'), spec.get('dir')));
+                });
         }
     });
 
@@ -46,37 +54,10 @@ function gitCloneSubdirPromise(gitPath, localPath, ref, subDir) {
         binary: 'git',
         maxConcurrentProcesses: 6,
     });
-    // TODO: If directory exists. perform just git pull
-
-    // NOTE: The spare checkout is needed because of abaility to checkout just a subdir
-    // equivalent to:
-
-    // git init <repo>
-    // cd <repo>
-    // git remote add origin <url>
-    // git config core.sparsecheckout true
-    // echo "DIR/*" >> .git/info/sparse-checkout
-    // git pull --depth=1 origin master
-
-    return git.init()
-        .then(() => console.log("git-clone START git=%s ref=%s subDir=%s toDir=%s", gitPath, ref, subDir, localPath))
-        .then(() => git.addRemote('origin', gitPath))
-        .then(() => git.addConfig('core.sparsecheckout', 'true'))
+    return git.clone(gitPath, localPath)
         .then(() => git.addConfig('pull.rebase', 'true'))
-        .then(() => git.addConfig('http.sslVerify', 'false'))
-        // subdir is no more available. cloning always whole repo
-        // .then(() => fs.writeFile(localPath + '/.git/info/sparse-checkout', subDir + '*'))
-        .then(() => git.pull('origin', ref, {'--depth': '1'}))
-        .then(() => git.branch({'--set-upstream-to': 'origin/' + ref}))
-        .then(() => console.log("git-clone DONE dir=%s", localPath))
-        // Don't move anything. Let's httpd to be correctly configured
-        // .then(() => {
-        //     if (subDir !== "/") {
-        //         return mvdir(localPath + subDir, localPath)
-        //             .then(() => console.log(`Sub-dir ${subDir} moved to ${localPath}`));
-        //     }
-        // })
-        ;
+        .then(() => git.checkout(ref))
+        .then(() => console.log("git-clone DONE git=%s ref=%s subDir=%s toDir=%s", gitPath, ref, subDir, localPath));
 }
 
 function logAndAbort(message, reason) {

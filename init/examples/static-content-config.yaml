@@ -1,10 +1,15 @@
 components:
-  - dir: theme/
+  - dir: template
     kind: git
     spec:
       ref: main
       url: https://github.com/websitecd/websitecd-examples.git
-  - dir: _root/
+  - dir: shared-components
+    kind: git
+    spec:
+      ref: 2.0.0
+      url: https://github.com/websitecd/websitecd-examples.git
+  - dir: _root
     kind: git
     spec:
       ref: main

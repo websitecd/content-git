@@ -13,6 +13,14 @@ The result is that all git repose are cloned based on configurations
 
 ## How to run
 
+### Locally
+
+```shell
+rm -rf /tmp/repos
+CONFIG_PATH=examples/static-content-config.yaml TARGET_DIR=/tmp/repos npm start
+```
+
+
 ### Docker
 
 Use docker from [Quay](https://quay.io/repository/websitecd/content-git-api) or build your own.
