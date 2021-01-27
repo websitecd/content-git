@@ -41,7 +41,7 @@ function processConfig(config) {
                 })
                 .catch(() => {
                     console.log("Creating dir %s", desiredDir);
-                    return fs.mkdir(desiredDir)
+                    return fs.mkdir(desiredDir, { recursive: true })
                         .then(() => gitCloneSubdirPromise(spec.get('url'), desiredDir, spec.get('ref'), spec.get('dir')))
                         .catch(reason => logAndAbort("Cannot make dir", reason));
                 });
