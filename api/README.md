@@ -1,4 +1,4 @@
-# content-git / API
+# content-git-api
 Container with API for git repositories
 
 ## API
@@ -10,6 +10,13 @@ Container with API for git repositories
 * `/health/ready`
 
 ## How to run
+
+## Docker
+
+```shell
+mkdir /tmp/repos/
+docker run --rm -e "APP_DATA_DIR=/app/data" -v "/tmp/repos/:/app/data/" -p 8090:8090 quay.io/websitecd/content-git-api
+```
 
 ### Locally
 

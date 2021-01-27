@@ -1,4 +1,4 @@
-# content-git / init
+# content-git-init
 Container for initializing content from git repositories
 
 ## Configuration
