@@ -1,4 +1,4 @@
-name: Deploy to Quay.io
+name: Build CI
 
 on:
   push:
