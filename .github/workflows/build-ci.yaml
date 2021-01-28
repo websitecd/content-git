@@ -34,7 +34,7 @@ jobs:
         run: npm install
       - name: Run Init
         working-directory: init
-        with:
+        env:
           CONFIG_PATH: examples/build-ci-test.yaml
           TARGET_DIR: .
         run: npm start
