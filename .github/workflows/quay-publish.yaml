@@ -25,7 +25,7 @@ jobs:
         uses: docker/build-push-action@v1
         with:
           path: api
-          dockerfile: src/main/docker/Dockerfile.native
+          dockerfile: api/src/main/docker/Dockerfile.native
           registry: ${{ env.REGISTRY_SERVER }}
           repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.IMAGE_NAME }}
           username: ${{ secrets.CI_QUAY_USERNAME }}
@@ -45,7 +45,7 @@ jobs:
         uses: docker/build-push-action@v1
         with:
           path: init
-          dockerfile: Dockerfile
+          dockerfile: init/Dockerfile
           registry: ${{ env.REGISTRY_SERVER }}
           repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.IMAGE_NAME }}
           username: ${{ secrets.CI_QUAY_USERNAME }}
