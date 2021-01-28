@@ -9,10 +9,11 @@ components:
   - dir: shared-components
     kind: git
     spec:
-      ref: 2.0.0
+      ref: main
+#      ref: 2.0.0
       url: https://github.com/websitecd/websitecd-examples.git
   - dir: _root
     kind: git
     spec:
-      ref: main
+      ref: prod
       url: https://github.com/websitecd/websitecd-examples.git
