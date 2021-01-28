@@ -27,7 +27,27 @@ jobs:
           path: /api
           dockerfile: src/main/docker/Dockerfile.native
           registry: ${{ env.REGISTRY_SERVER }}
-          repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.image_name }}
+          repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.IMAGE_NAME }}
+          username: ${{ secrets.CI_QUAY_USERNAME }}
+          password: ${{ secrets.CI_QUAY_TOKEN }}
+          tag_with_ref: true
+
+  init-deploy:
+    env:
+      IMAGE_NAME: "content-git-init"
+      REGISTRY_SERVER: "quay.io"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Registry Login
+        run: docker login -u ${{ secrets.CI_QUAY_USERNAME }} -p ${{ secrets.CI_QUAY_TOKEN }} ${{ env.REGISTRY_SERVER }}
+      - name: Build and publish image to Registry
+        uses: docker/build-push-action@v1
+        with:
+          path: /init
+          dockerfile: Dockerfile
+          registry: ${{ env.REGISTRY_SERVER }}
+          repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.IMAGE_NAME }}
           username: ${{ secrets.CI_QUAY_USERNAME }}
           password: ${{ secrets.CI_QUAY_TOKEN }}
           tag_with_ref: true

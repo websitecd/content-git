@@ -1,4 +1,4 @@
-name: Build init CI
+name: Build Nodejs CI
 
 on:
   push:
@@ -13,15 +13,12 @@ on:
 jobs:
   build-init:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [ 14.x ]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14.x
       - name: Dependencies
         working-directory: init
         run: npm install
