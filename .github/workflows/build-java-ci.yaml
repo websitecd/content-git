@@ -1,13 +1,9 @@
 name: Build Java CI
 
 on:
-  push:
-    paths-ignore:
-      - 'init/**'
   pull_request:
     paths-ignore:
       - 'init/**'
-
 
 jobs:
   build-api:
