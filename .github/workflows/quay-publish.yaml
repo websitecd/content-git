@@ -20,7 +20,7 @@ jobs:
       - name: Registry Login
         run: docker login -u ${{ secrets.CI_QUAY_USERNAME }} -p ${{ secrets.CI_QUAY_TOKEN }} ${{ env.REGISTRY_SERVER }}
       - name: Maven Native Build
-        run: mvn --no-transfer-progress package -Pnative -Dquarkus.native.container-build=true
+        run: mvn -B package -Pnative -Dquarkus.native.container-build=true
       - name: Build and publish image to Registry
         uses: docker/build-push-action@v1
         with:

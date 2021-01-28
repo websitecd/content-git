@@ -19,6 +19,6 @@ jobs:
         with:
           java-version: 11
       - name: Maven Test
-        run: mvn --no-transfer-progress test
+        run: mvn -B test
       - name: Maven Native Build
-        run: mvn --no-transfer-progress package -Pnative
+        run: mvn -B package -Pnative
