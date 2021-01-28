@@ -15,5 +15,5 @@ components:
   - dir: _root
     kind: git
     spec:
-      ref: prod
+      ref: main
       url: https://github.com/websitecd/websitecd-examples.git
