@@ -24,7 +24,7 @@ jobs:
       - name: Build and publish image to Registry
         uses: docker/build-push-action@v1
         with:
-          path: /api
+          path: api
           dockerfile: src/main/docker/Dockerfile.native
           registry: ${{ env.REGISTRY_SERVER }}
           repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.IMAGE_NAME }}
@@ -44,7 +44,7 @@ jobs:
       - name: Build and publish image to Registry
         uses: docker/build-push-action@v1
         with:
-          path: /init
+          path: init
           dockerfile: Dockerfile
           registry: ${{ env.REGISTRY_SERVER }}
           repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.IMAGE_NAME }}
