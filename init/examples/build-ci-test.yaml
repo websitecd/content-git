@@ -1,7 +1,7 @@
 # Example Config File
 # Used in Build CI !!!
 components:
-  - dir: .template/nav
+  - dir: .template_nav
     kind: git
     spec:
       ref: main

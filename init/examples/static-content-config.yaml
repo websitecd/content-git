@@ -1,10 +1,5 @@
 components:
-  - dir: .ssi/nav
-    kind: git
-    spec:
-      ref: ssi-service-stage
-      url: https://gitlab.cee.redhat.com/lkrzyzan/one-platform-content.git
-  - dir: template
+  - dir: .template_nav
     kind: git
     spec:
       ref: main
