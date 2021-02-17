@@ -1,11 +1,6 @@
 # To build docker image:
 # docker build -t websitecd/content-git-init .
 #
-# To run init-content.js
-#
-# docker run --rm -i -e "CONFIG_PATH=/app/data/static-content-config.yaml" -e "TARGET_DIR=/app/data/" -v "/tmp/contentdev/:/app/data/" websitecd/content-git-init node init-content.js
-#
-#
 FROM node:14 AS stage1
 
 # Create app directory
@@ -31,7 +26,11 @@ FROM node:14-slim
 
 COPY --from=stage1 /usr/src/app /usr/src/app
 
-RUN apt-get update && apt-get install -y git curl && apt-get clean
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 
