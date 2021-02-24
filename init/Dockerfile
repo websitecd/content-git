@@ -24,14 +24,19 @@ CMD [ "node", "init-content.js" ]
 # prod stage
 FROM node:14-slim
 
-COPY --from=stage1 /usr/src/app /usr/src/app
-
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     git \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /usr/src/app
+WORKDIR /work/
+RUN chown 1001 /work \
+    && chmod "g+rwX" /work \
+    && chown 1001:root /work
+
+COPY --from=stage1 --chown=1001:root /usr/src/app /work
+
+USER 1001
 
 CMD [ "node", "init-content.js" ]
