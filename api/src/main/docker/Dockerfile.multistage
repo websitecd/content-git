@@ -1,0 +1,29 @@
+# Multi stage build with support of CA Certs
+# Example:
+# docker build --build-arg CA_CERT_URL=https://password.corp.redhat.com/RH-IT-Root-CA.crt -f api/src/main/docker/Dockerfile.multistage -t websitecd/content-git-api .
+#
+## Stage 1 : build with maven builder image with native capabilities
+FROM quay.io/quarkus/centos-quarkus-maven:21.0.0-java11 AS build
+COPY . /usr/src/app/
+USER root
+RUN chown -R quarkus /usr/src/app
+ARG CA_CERT_URL
+RUN curl -k ${CA_CERT_URL} --create-dirs -o /usr/src/app/website-cd-ca.crt
+RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias website-cd-ca -file /usr/src/app/website-cd-ca.crt -cacerts
+USER quarkus
+
+RUN mvn -f /usr/src/app/pom.xml -B de.qaware.maven:go-offline-maven-plugin:1.2.5:resolve-dependencies
+RUN mvn -f /usr/src/app/pom.xml clean package -Pnative
+
+## Stage 2 : create the docker final image
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
+WORKDIR /work/
+RUN chown 1001 /work \
+    && chmod "g+rwX" /work \
+    && chown 1001:root /work
+COPY --from=build --chown=1001:root /usr/src/app/api/target/*-runner /work/application
+
+EXPOSE 8080
+USER 1001
+
+CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
