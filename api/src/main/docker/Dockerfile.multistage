@@ -9,7 +9,7 @@ USER root
 RUN chown -R quarkus /usr/src/app
 ARG CA_CERT_URL
 RUN curl -k ${CA_CERT_URL} --create-dirs -o /usr/src/app/website-cd-ca.crt
-RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias website-cd-ca -file /usr/src/app/website-cd-ca.crt -cacerts
+RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias website-cd-ca -file /usr/src/app/website-cd-ca.crt -cacerts -storepass changeit
 USER quarkus
 
 RUN mvn -f /usr/src/app/pom.xml -B de.qaware.maven:go-offline-maven-plugin:1.2.5:resolve-dependencies
