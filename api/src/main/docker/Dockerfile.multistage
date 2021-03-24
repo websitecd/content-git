@@ -1,6 +1,6 @@
 # Multi stage build with support of CA Certs
 # Example:
-# docker build --build-arg CA_CERT_URL=https://password.corp.redhat.com/RH-IT-Root-CA.crt -f api/src/main/docker/Dockerfile.multistage -t websitecd/content-git-api .
+# docker build --build-arg CA_CERT_URL=https://password.corp.redhat.com/RH-IT-Root-CA.crt -f api/src/main/docker/Dockerfile.multistage -t spaship/content-git-api .
 #
 ## Stage 1 : build with maven builder image with native capabilities
 FROM quay.io/quarkus/centos-quarkus-maven:21.0.0-java11 AS build

@@ -1,4 +1,4 @@
-package io.websitecd.content.git.api.rest;
+package io.spaship.content.git.api.rest;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

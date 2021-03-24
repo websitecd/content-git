@@ -1,5 +1,5 @@
 # To build docker image:
-# docker build -t websitecd/content-git-init .
+# docker build -t spaship/content-git-init .
 #
 FROM node:14 AS stage1
 
