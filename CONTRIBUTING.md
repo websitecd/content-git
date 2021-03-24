@@ -1,6 +1,9 @@
 # Contributing
 
 Feel free to create an issue, or a pull request.
+Just fork the repository and participate.
+
+See module's README.md how to test and build the module.
 
 ## Release process
 
