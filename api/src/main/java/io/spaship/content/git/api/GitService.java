@@ -1,9 +1,9 @@
-package io.websitecd.content.git.api;
+package io.spaship.content.git.api;
 
 import io.quarkus.runtime.StartupEvent;
-import io.websitecd.content.git.api.model.CommitInfo;
-import io.websitecd.content.git.api.model.GitInfo;
-import io.websitecd.content.git.api.rest.WebsiteInfoResource;
+import io.spaship.content.git.api.model.CommitInfo;
+import io.spaship.content.git.api.model.GitInfo;
+import io.spaship.content.git.api.rest.WebsiteInfoResource;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;

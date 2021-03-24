@@ -20,12 +20,12 @@ CONFIG_PATH=examples/static-content-config.yaml GIT_SSL_NO_VERIFY=true TARGET_DI
 
 ### Docker
 
-Use docker from [Quay](https://quay.io/repository/websitecd/content-git-init) or build your own.
+Use docker from [Quay](https://quay.io/repository/spaship/content-git-init) or build your own.
 
 Build image:
 
 ```shell script
-docker build -t websitecd/content-git-init .
+docker build -t spaship/content-git-init .
 ```
 
 Prepare config
@@ -37,12 +37,12 @@ cp examples/static-content-config.yaml /tmp/repos/static-content-config.yaml
 Run init:
 
 ```shell script
-docker run --rm -e "CONFIG_PATH=/app/data/static-content-config.yaml" -e "TARGET_DIR=/app/data" -e "GIT_SSL_NO_VERIFY=true" -v "/tmp/repos/:/app/data/" websitecd/content-git-init
+docker run --rm -e "CONFIG_PATH=/app/data/static-content-config.yaml" -e "TARGET_DIR=/app/data" -e "GIT_SSL_NO_VERIFY=true" -v "/tmp/repos/:/app/data/" spaship/content-git-init
 ```
 
 Push to repo
 
 ```shell
-docker tag websitecd/content-git-init quay.io/websitecd/content-git-init
-docker push quay.io/websitecd/content-git-init
+docker tag spaship/content-git-init quay.io/spaship/content-git-init
+docker push quay.io/spaship/content-git-init
 ```

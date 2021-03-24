@@ -15,7 +15,7 @@ Container with API for git repositories
 
 ```shell
 mkdir /tmp/repos/
-docker run --rm -e "APP_DATA_DIR=/app/data" -v "/tmp/repos/:/app/data/" -p 8090:8090 quay.io/websitecd/content-git-api
+docker run --rm -e "APP_DATA_DIR=/app/data" -v "/tmp/repos/:/app/data/" -p 8090:8090 quay.io/spaship/content-git-api
 ```
 
 ### Locally
@@ -48,9 +48,9 @@ APP_DATA_DIR=/tmp/repos ./target/content-git-api-1.1.1-SNAPSHOT-runner
 ```shell
 mvn clean package -Pnative -Dquarkus.native.container-build=true
 
-docker build -f src/main/docker/Dockerfile.native -t websitecd/content-git-api .
+docker build -f src/main/docker/Dockerfile.native -t spaship/content-git-api .
 ```
 
 ```shell
-docker run -i --rm -e APP_DATA_DIR=/app/data -v /tmp/repos:/app/data/ -p 8090:8090 websitecd/content-git-api
+docker run -i --rm -e APP_DATA_DIR=/app/data -v /tmp/repos:/app/data/ -p 8090:8090 spaship/content-git-api
 ```

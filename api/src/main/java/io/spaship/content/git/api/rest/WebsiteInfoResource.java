@@ -1,7 +1,7 @@
-package io.websitecd.content.git.api.rest;
+package io.spaship.content.git.api.rest;
 
-import io.websitecd.content.git.api.GitService;
-import io.websitecd.content.git.api.model.GitInfo;
+import io.spaship.content.git.api.GitService;
+import io.spaship.content.git.api.model.GitInfo;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import javax.inject.Inject;

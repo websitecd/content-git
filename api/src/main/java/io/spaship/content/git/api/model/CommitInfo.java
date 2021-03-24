@@ -1,4 +1,4 @@
-package io.websitecd.content.git.api.model;
+package io.spaship.content.git.api.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.quarkus.runtime.annotations.RegisterForReflection;
