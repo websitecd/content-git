@@ -25,5 +25,5 @@ jobs:
         working-directory: init
         env:
           CONFIG_PATH: examples/build-ci-test.yaml
-          TARGET_DIR: .
+          TARGET_DIR: /tmp
         run: npm start
