@@ -20,6 +20,11 @@ rm -rf /tmp/repos; mkdir /tmp/repos
 CONFIG_PATH=examples/static-content-config.yaml GIT_SSL_NO_VERIFY=true TARGET_DIR=/tmp/repos npm start
 ```
 
+```shell
+rm -rf /tmp/repos; mkdir /tmp/repos
+CONFIG_PATH=examples/build-ci-test.yaml TARGET_DIR=/tmp/repos npm start
+```
+
 ### Docker
 
 Use docker from [Quay](https://quay.io/repository/spaship/content-git-init) or build your own.
