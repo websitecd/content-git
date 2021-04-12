@@ -4,10 +4,26 @@ Container with API for git repositories
 ## API
 
 * `/api/list` - list of components (dirs)
+* `/api/info/{dir}` - info about component (dir)
 * `/api/update/{dir}` - update particular component (dir)
-* `/websiteinfo` - website info
 * `/health/live`
 * `/health/ready`
+
+### /api/info/{dir}
+
+Example of info API:
+
+```json
+{
+  "url": "https://github.com/spaship/spaship-examples.git",
+  "branch": "main",
+  "lastCommit": {
+    "message": "Merge pull request #3 from spaship/renovate/pin-dependencies\n\nPin dependency nodemon to 2.0.7",
+    "author": "Libor Krzyzanek",
+    "timestamp": "2021-03-25 10:49:32"
+  }
+}
+```
 
 ## How to run
 

@@ -3,7 +3,7 @@ package io.spaship.content.git.api;
 import io.quarkus.runtime.StartupEvent;
 import io.spaship.content.git.api.model.CommitInfo;
 import io.spaship.content.git.api.model.GitInfo;
-import io.spaship.content.git.api.rest.WebsiteInfoResource;
+import io.spaship.content.git.api.rest.GitApiResource;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -34,7 +34,7 @@ public class GitService {
     String dataDirPath;
 
     @Inject
-    WebsiteInfoResource websiteInfoResource;
+    GitApiResource gitApiResource;
 
     void onStart(@Observes StartupEvent ev) {
         File dataDirFile = new File(dataDir);
@@ -75,7 +75,7 @@ public class GitService {
         git.close();
         log.infof("Update Success. result=%s", resultStr);
 
-        websiteInfoResource.clearInfo();
+        gitApiResource.clearInfo(dir);
         return resultStr;
     }
 
