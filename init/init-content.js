@@ -34,7 +34,6 @@ function processConfig(config) {
         let spec = c.get('spec');
         if (kind === 'git') {
             const desiredDir = targetDirPath + "/" + componentDir;
-            // TODO: Redesign the git clone process. It should git clone to another directory and rsync to target dir and delete the previous "version" within rsync
             return fs.access(desiredDir)
                 .then(() => {
                     console.log("Dir %s exists. SKIPPING !", desiredDir);
@@ -43,15 +42,22 @@ function processConfig(config) {
                     console.log("Creating dir %s", desiredDir);
                     return fs.mkdir(desiredDir, { recursive: true })
                         .then(() => gitCloneSubdirPromise(spec.get('url'), desiredDir, spec.get('ref'), spec.get('dir')))
-                        .catch(reason => logAndAbort("Cannot make dir", reason));
+                        .catch(reason => {
+                            console.error("Error cloning git repo. Going to delete dir.", reason);
+                            return fs.rmdir(desiredDir, { recursive: true })
+                                .then(() => {
+                                    console.log("dir %s DELETED because of error", desiredDir)
+                                    throw new Error("Error cloning git repo. Dir deleted.");
+                                });
+                        });
                 });
         }
     });
 
     // Process all actions
     Promise.all(gitPromises)
-        .finally(() => console.log("SUCCESS. All git repos cloned"))
-        .catch(reason => logAndAbort("Error cloning git", reason));
+        .then(() => console.log("SUCCESS. All git repos cloned"))
+        .catch(reason => logAndAbort("Error!", reason));
 }
 
 function gitCloneSubdirPromise(gitPath, localPath, ref, subDir) {
