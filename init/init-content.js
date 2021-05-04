@@ -5,7 +5,7 @@ const simpleGit = require('simple-git');
 
 const configFilePath = process.env.CONFIG_PATH;
 const targetDirPath = process.env.TARGET_DIR;
-const deleteDirIfExist = process.env.DELETE_DIR_IF_EXIST || "true";
+const updateDirIfExist = process.env.UPDATE_IF_DIR_EXIST || "true";
 
 if (configFilePath === undefined) logAndAbort("Error: CONFIG_PATH env variable not defined");
 if (targetDirPath === undefined) logAndAbort("Error: TARGET_DIR env variable not defined");
@@ -13,28 +13,21 @@ if (targetDirPath === undefined) logAndAbort("Error: TARGET_DIR env variable not
 const sslNoVerify = process.env.GIT_SSL_NO_VERIFY || "false";
 const sslVerify = !(sslNoVerify === "true");
 
-console.log("Configuration CONFIG_PATH=%s TARGET_DIR=%s GIT_SSL_NO_VERIFY=%s DELETE_DIR_IF_EXIST=%s",
-    configFilePath, targetDirPath, sslNoVerify, deleteDirIfExist);
+console.log("[main] Configs CONFIG_PATH=%s TARGET_DIR=%s GIT_SSL_NO_VERIFY=%s UPDATE_IF_DIR_EXIST=%s",
+    configFilePath, targetDirPath, sslNoVerify, updateDirIfExist);
 
 // Start the process
 processConfigFile(configFilePath);
 
 function processConfigFile(path) {
-    console.log("START"); // just empty line
-    console.log("Going to read config file path=%s sslVerify=%s", path, sslVerify);
+    console.log("[main] START"); // just empty line
+    console.log("[main] Going to read config file path=%s sslVerify=%s", path, sslVerify);
     fs.readFile(path, 'utf8')
         .then(file => YAML.parseDocument(file, {schema: 'core'}))
         .then(yaml => yaml.get('components'))
         .then(components => {
-            console.log("components count=%s", components.items.length);
-            if (deleteDirIfExist === "true") {
-                console.log("CHECK if directory exists and delete them.");
-                deleteDirsIfExists(components)
-                    .then(() => processComponents(components))
-                    .catch(reason => logAndAbort("Cannot delete existing dirs", reason));
-            } else {
-                processComponents(components)
-            }
+            console.log("[main] components_count=%s", components.items.length);
+            processComponents(components)
         })
         .catch(reason => logAndAbort("Cannot read config file", reason));
 }
@@ -48,19 +41,31 @@ function processComponents(components) {
             const ref = spec.get('ref');
             const dir = spec.get('dir');
             const desiredDir = componentDir(c);
-            return fs.access(desiredDir)
+            const desiredDirGit = desiredDir + '/.git';
+            let start = new Date();
+            return fs.access(desiredDirGit)
                 .then(() => {
-                    console.log("Dir %s exists. SKIPPING !", desiredDir);
+                    if (updateDirIfExist === 'true') {
+                        console.log("[check] EXISTS path=%s", desiredDirGit);
+                        console.log("[git-pull] START path=%s", desiredDir);
+                        return gitPullSubdirPromise(desiredDir, ref)
+                            .then((result) => console.log("[git-pull] DONE path=%s time=%sms result=%s", desiredDir, (new Date() - start), result.summary))
+                            .catch(reason => logAndAbort("[git-pull] ERROR path=" + desiredDir, reason));
+                    } else {
+                        console.log("[check] path=%s exists. No action performed.", desiredDirGit);
+                    }
                 })
                 .catch(() => {
-                    console.log("Creating dir %s", desiredDir);
+                    console.log("[check] NOT_EXISTS path=%s", desiredDirGit);
+                    console.log("[git-clone] START path=%s", desiredDir);
                     return fs.mkdir(desiredDir, {recursive: true})
                         .then(() => gitCloneSubdirPromise(url, desiredDir, ref, dir))
+                        .then(() => console.log("[git-clone] DONE path=%s git=%s ref=%s subDir=%s time=%sms", desiredDir, url, ref, dir, (new Date() - start)))
                         .catch(reason => {
-                            console.error("Error cloning git repo. Going to delete dir.", reason);
+                            console.error("[git-clone] ERROR path=%s Going to delete dir.", reason);
                             return fs.rmdir(desiredDir, {recursive: true})
                                 .then(() => {
-                                    console.log("dir %s DELETED because of error", desiredDir)
+                                    console.log("[git-clone] DELETED path=%s because of error", desiredDir)
                                     throw new Error("Error cloning git repo. Dir deleted.");
                                 });
                         });
@@ -69,7 +74,7 @@ function processComponents(components) {
 
     // Process all actions
     Promise.all(gitPromises)
-        .then(() => console.log("SUCCESS. All git repos cloned"))
+        .then(() => console.log("[main] DONE All git repos cloned/updated"))
         .catch(reason => logAndAbort("Error!", reason));
 }
 
@@ -83,19 +88,16 @@ function gitCloneSubdirPromise(gitPath, localPath, ref, subDir) {
         .then(() => git.addConfig('pull.rebase', 'true'))
         .then(() => git.addConfig('pull.rebase', 'true'))
         .then(() => git.addConfig('http.sslVerify', '' + sslVerify))
-        .then(() => git.checkout(ref))
-        .then(() => console.log("git-clone DONE git=%s ref=%s subDir=%s toDir=%s", gitPath, ref, subDir, localPath));
+        .then(() => git.checkout(ref));
 }
 
-function deleteDirsIfExists(components) {
-    return Promise.all(components.items
-        .filter(c => isKindGit(c))
-        .map(c => componentDir(c))
-        .map(dirname =>
-            fs.access(dirname)
-                .then(() => fs.rmdir(dirname, {recursive: true}).then(() => console.log("dir %s DELETED", dirname))
-                ).catch(() => console.log("Directory %s not exists", dirname))
-        ));
+function gitPullSubdirPromise(localPath, ref) {
+    let git = simpleGit({
+        baseDir: localPath,
+        binary: 'git',
+        maxConcurrentProcesses: 6,
+    });
+    return git.pull('origin', ref);
 }
 
 function isKindGit(c) {
@@ -106,23 +108,7 @@ function componentDir(c) {
     return targetDirPath + "/" + c.get('dir');
 }
 
-function checkDirNotEmpty(dirname) {
-    return isDirEmpty(dirname)
-        .then(isEmpty => {
-            if (isEmpty) {
-                throw new Error("Dir is empty dir=" + dirname)
-            } else {
-                return isEmpty;
-            }
-        });
-}
-
-function isDirEmpty(dirname) {
-    return fs.readdir(dirname)
-        .then(files => files.length === 0);
-}
-
 function logAndAbort(message, reason) {
-    console.error(message + ((reason) ? " reason: %s" + reason : ""));
+    console.error(message + ((reason) ? " Reason: " + reason : ""));
     process.abort();
 }
